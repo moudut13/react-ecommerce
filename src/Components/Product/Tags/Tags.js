@@ -1,8 +1,43 @@
+import React ,{ useState , useEffect} from "react";
 import {Link} from "react-router-dom";
 import AddTags from "./AddTags";
+import AllPermissionSingle from "../../User/Permission/AllPermissionSingle";
+import AllTagSingle from "./AllTagSingle";
 
 
 const Tags = () => {
+    const [TagData, setTagData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const LoadingMsg = <p>Loading....</p>;
+    const errorMsg = <p>{error}</p>;
+
+    useEffect(()=>{
+        fetch('http://127.0.0.1:8000/api/admin/tag').then((res)=>{
+            if (!res.ok){
+                throw Error("Fetching is not successful")
+            }else {
+                return res.json()
+            }
+        }).then((data)=>{
+            setTagData(data)
+            setIsLoading(false)
+            setError(null)
+        }).catch((error)=>{
+            setError(error.message)
+            setIsLoading(false)
+        })
+
+    },[]);
+
+    let num = 1;
+    const allTag = TagData && TagData.map((data,id)=>{
+        return[
+            <AllTagSingle key={id} data={data} num={num}/>
+        ]
+    })
+
+
     return(
         <div className="page-wrapper">
 
@@ -41,12 +76,9 @@ const Tags = () => {
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>Samsung</td>
-                                            <td>samsung</td>
-                                            <td>status</td>
-                                            <td><button className="btn btn-sm btn-danger">Delete</button></td>
-                                        </tr>
+                                        {error && errorMsg}
+                                        {isLoading && LoadingMsg}
+                                        {allTag}
                                         </tbody>
                                     </table>
                                 </div>
