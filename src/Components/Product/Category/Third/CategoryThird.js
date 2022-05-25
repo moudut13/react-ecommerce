@@ -27,7 +27,8 @@ const CategoryThird = () => {
     },[]);
 
     const allCategoryThird = categoryThird && categoryThird.map((data,id)=>{
-        return <SingleCategoryThird data={data} key={id} />
+            return <SingleCategoryThird data={data} key={data.id} />
+
     });
 
   return(

@@ -1,5 +1,6 @@
 import React , {useState,useEffect} from "react";
 import Select from 'react-select';
+import axios from "axios";
 
 
 const AddProduct = () => {
@@ -9,9 +10,50 @@ const AddProduct = () => {
     const [tag , setTag] = useState();
     const [errorName , setErrorName] = useState();
     const [product ,setProduct] = useState({
-        name: '',
+        'category_first_id' : '',
+        'category_second_id': '',
+        'category_third_id' : '',
+        'tag_id'            : '',
+        'name'              : '',
+        'sku'               : '',
+        'stock'             : '',
+        'short_desc'        : '',
+        'long_desc'         : '',
+        'regular_price'     : '',
+        'sale_price'        : '',
+        'gallery'           : '',
+        'hot_deal'          : '',
+        'featured_deal'     : '',
+        'status'            : '',
     });
-    const { name } = product;
+
+    const [ color , setColor ] = useState([])
+    const [ size , setSize ] = useState([])
+
+    const {
+            category_first_id , category_second_id , category_third_id, tag_id,
+            name , sku, stock, short_desc, long_desc, regular_price, sale_price,
+            gallery, hot_deal, featured_deal, status
+    } = product;
+
+    const handleInputChange = (e) => {
+        const name = e.target.name;
+        setProduct((oldProduct) =>{
+            return{
+                ...oldProduct,[name] :e.target.value
+            }
+        })
+    }
+    
+    const handleInputColorChange = (e) => {
+        const name = e.target.value;
+        setColor([...color,name]);
+    }
+    
+    const handleInputSizeChange = (e) => {
+        const name = e.target.value;
+        setSize([...size,name]);
+    }
 
     const Validation = () => {
         if (!name > 0) {
@@ -52,12 +94,43 @@ const AddProduct = () => {
             setTag(data)
         })
     },[]);
-    
 
+     const tagDataList = [
+        { value: 'ocean', label: 'Ocean', color: '#00B8D9', isFixed: true },
+        { value: 'blue', label: 'Blue', color: '#0052CC' },
+        { value: 'purple', label: 'Purple', color: '#5243AA' },
+        { value: 'red', label: 'Red', color: '#FF5630', isFixed: true },
+        { value: 'orange', label: 'Orange', color: '#FF8B00' },
+        { value: 'yellow', label: 'Yellow', color: '#FFC400' },
+        { value: 'green', label: 'Green', color: '#36B37E' },
+        { value: 'forest', label: 'Forest', color: '#00875A' },
+        { value: 'slate', label: 'Slate', color: '#253858' },
+        { value: 'silver', label: 'Silver', color: '#666666' },
+    ];
 
     const onProductSubmit = (e) => {
         e.preventDefault();
-        if (Validation()){}
+        if (Validation()){
+            axios.post('http://127.0.0.1:8000/api/admin/product', {
+                name : name,
+                sku : sku,
+                stock : stock,
+                short_desc: short_desc,
+                long_desc : long_desc,
+                regular_price : regular_price,
+                sale_price : sale_price,
+                color : color,
+                size : size,
+                status: status,
+                hot_deal: hot_deal,
+                featured_deal: featured_deal,
+            }).then(function (response) {
+                /*console.log(response);*/
+            })
+            console.log(product);
+        }
+        console.log()
+
     }
 
     const CategoryFirstData = categoryFirst && categoryFirst.map((data,id)=>{
@@ -95,12 +168,20 @@ const AddProduct = () => {
                                         <div className="row">
                                             <div className="col-md-2">
                                                 <label>
-                                                    <input type="radio" name="radio" /> Publish
+                                                    <input
+                                                        onChange={handleInputChange}
+                                                        type="radio"
+                                                        name="status"
+                                                        /> Publish
                                                 </label>
                                             </div>
                                             <div className="col-md-2">
                                                 <label>
-                                                    <input type="radio" name="radio" /> Unpublished
+                                                    <input
+                                                        onChange={handleInputChange}
+                                                        type="radio"
+                                                        name="status"
+                                                        /> Unpublished
                                                 </label>
                                             </div>
                                         </div>
@@ -111,60 +192,93 @@ const AddProduct = () => {
                                 <div className="col-md-7">
                                     <div className="form-group">
                                         <label htmlFor="name">Product Name</label>
-                                        <input type="text"
-                                           className="form-control"
-                                           id="name"
+                                        <input
+                                            onChange={handleInputChange}
+                                            name="name"
+                                            type="text"
+                                            className="form-control"
+                                            id="name"
+                                            value={name}
                                         />
                                     </div>
+                                    <strong>{errorName}</strong>
                                     <div className="form-group">
                                         <label htmlFor="name">Regular Price</label>
-                                        <input type="number"
-                                               className="form-control"
-                                               id="name"
+                                        <input
+                                            onChange={handleInputChange}
+                                            name="regular_price"
+                                            value={regular_price}
+                                            type="number"
+                                            className="form-control"
+                                            id="name"
                                         />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="name">Sale Price</label>
-                                        <input type="number"
-                                               className="form-control"
-                                               id="name"
+                                        <input
+                                            onChange={handleInputChange}
+                                            name="sale_price"
+                                            value={sale_price}
+                                            type="number"
+                                            className="form-control"
+                                            id="name"
                                         />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="name">SKU</label>
-                                        <input type="text"
-                                               className="form-control"
-                                               id="name"
+                                        <input
+                                            onChange={handleInputChange}
+                                            name="sku"
+                                            value={sku}
+                                            type="text"
+                                            className="form-control"
+                                            id="name"
                                         />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="name">Stock</label>
-                                        <input type="number"
-                                               className="form-control"
-                                               id="name"
+                                        <input
+                                            onChange={handleInputChange}
+                                            name="stock"
+                                            value={stock}
+                                            type="number"
+                                            className="form-control"
+                                            id="name"
                                         />
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="name">Short Description</label>
                                         <textarea
+                                            onChange={handleInputChange}
+                                            name="short_desc"
+                                            value={short_desc}
                                             rows="3"
                                             cols="5"
                                             className="form-control"
-                                            placeholder="Short...........">
+                                        >
                                         </textarea>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="name">Long Description</label>
                                         <textarea
+                                            onChange={handleInputChange}
+                                            name="long_desc"
+                                            value={long_desc}
                                             rows="4"
                                             cols="5"
                                             className="form-control"
-                                            placeholder="Long.............">
+                                        >
                                         </textarea>
                                     </div>
                                     <div className="form-group">
                                         <label htmlFor="photo">Photo</label>
-                                        <input type="file" className="form-control-file" id="photo"/>
+                                        <input
+                                            onChange={handleInputChange}
+                                            name="gallery"
+                                            value={gallery}
+                                            type="file"
+                                            className="form-control-file"
+                                            id="photo"/>
                                     </div>
                                 </div>
 
@@ -194,17 +308,29 @@ const AddProduct = () => {
                                         <label htmlFor="name">Color</label>
                                         <div className="checkbox">
                                             <label>
-                                                <input type="checkbox" name="checkbox"/> Option 1
+                                                <input
+                                                    onChange={handleInputColorChange}
+                                                    name="color"
+                                                    value="Red"
+                                                    type="checkbox"/> Red
                                             </label>
                                         </div>
                                         <div className="checkbox">
                                             <label>
-                                                <input type="checkbox" name="checkbox"/> Option 2
+                                                <input
+                                                    onChange={handleInputColorChange}
+                                                    type="checkbox"
+                                                    name="color"
+                                                    value="Green"/> Green
                                             </label>
                                         </div>
                                         <div className="checkbox">
                                             <label>
-                                                <input type="checkbox" name="checkbox"/> Option 3
+                                                <input
+                                                    onChange={handleInputColorChange}
+                                                    type="checkbox"
+                                                    name="color"
+                                                    value="Yellow"/> Yellow
                                             </label>
                                         </div>
                                     </div>
@@ -212,17 +338,29 @@ const AddProduct = () => {
                                         <label htmlFor="name">Size</label>
                                         <div className="checkbox">
                                             <label>
-                                                <input type="checkbox" name="checkbox"/> Option 1
+                                                <input
+                                                    onChange={handleInputSizeChange}
+                                                    type="checkbox"
+                                                    name="size"
+                                                    value="S"/> S
                                             </label>
                                         </div>
                                         <div className="checkbox">
                                             <label>
-                                                <input type="checkbox" name="checkbox"/> Option 2
+                                                <input
+                                                    onChange={handleInputSizeChange}
+                                                    type="checkbox"
+                                                    name="size"
+                                                    value="M"/> M
                                             </label>
                                         </div>
                                         <div className="checkbox">
                                             <label>
-                                                <input type="checkbox" name="checkbox"/> Option 3
+                                                <input
+                                                    onChange={handleInputSizeChange}
+                                                    type="checkbox"
+                                                    name="size"
+                                                    value="XL"/> XL
                                             </label>
                                         </div>
                                     </div>
@@ -231,12 +369,20 @@ const AddProduct = () => {
                                         <div className="row">
                                             <div className="col-md-2">
                                                 <label>
-                                                    <input type="radio" name="radio"/> Yes
+                                                    <input
+                                                        onChange={handleInputChange}
+                                                        type="radio"
+                                                        name="hot_deal"
+                                                        /> Yes
                                                 </label>
                                             </div>
                                             <div className="col-md-2">
                                                 <label>
-                                                    <input type="radio" name="radio"/> Not
+                                                    <input
+                                                        onChange={handleInputChange}
+                                                        type="radio"
+                                                        name="hot_deal"
+                                                        /> Not
                                                 </label>
                                             </div>
                                         </div>
@@ -246,12 +392,20 @@ const AddProduct = () => {
                                         <div className="row">
                                             <div className="col-md-2">
                                                 <label>
-                                                    <input type="radio" name="radio" /> Yes
+                                                    <input
+                                                        onChange={handleInputChange}
+                                                        type="radio"
+                                                        name="featured_deal"
+                                                        /> Yes
                                                 </label>
                                             </div>
                                             <div className="col-md-2">
                                                 <label>
-                                                    <input type="radio" name="radio"/> Not
+                                                    <input
+                                                        onChange={handleInputChange}
+                                                        type="radio"
+                                                        name="featured_deal"
+                                                        /> Not
                                                 </label>
                                             </div>
                                         </div>
@@ -260,8 +414,9 @@ const AddProduct = () => {
                                         <label htmlFor="name">Tags name</label>
                                         <Select
                                             isMulti
-                                            name="colors"
-                                            options={tag}
+                                            name="tag_id"
+                                            onChange={handleInputChange}
+                                            options={tagDataList}
                                             className="basic-multi-select"
                                             classNamePrefix="select"
                                         />
@@ -280,3 +435,17 @@ const AddProduct = () => {
     )
 }
 export default AddProduct;
+
+/*
+*  sku : sku,
+                stock : stock,
+                short_desc: short_desc,
+                long_desc : long_desc,
+                regular_price : regular_price,
+                sale_price : sale_price,
+                hot_deal : hot_deal,
+                featured_deal :featured_deal,
+                status : status,
+                color : color,
+                size : size,
+* */

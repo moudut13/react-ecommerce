@@ -27,6 +27,7 @@ const AddPermission = () => {
                 /*console.log(response);*/
             })
         }
+        setName('');
     }
 
 

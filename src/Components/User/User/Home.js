@@ -1,10 +1,45 @@
-import React from "react";
+import React , {useState ,useEffect } from "react";
 import {Link} from "react-router-dom";
 
 import AddUser from "./AddUser";
+import AllUserSingle from "./AllUserSingle";
+
+
 
 
 const Home = () => {
+
+  const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const LoadingMsg = <p>Loading....</p>;
+  const errorMsg = <p>{error}</p>;
+
+  useEffect(()=>{
+    fetch('http://127.0.0.1:8000/api/admin/user').then((res)=>{
+      if (!res.ok){
+        throw Error("Fetching is not successful")
+      }else {
+        return res.json()
+      }
+    }).then((data)=>{
+      setUserData(data)
+      setIsLoading(false)
+      setError(null)
+    }).catch((error)=>{
+      setError(error.message)
+      setIsLoading(false)
+    })
+
+  },[]);
+
+  const allUserData = userData && userData.map((data,id)=>{
+    return[
+      <AllUserSingle key={id} data={data}/>
+    ]
+  })
+
+
   return(
       <div className="page-wrapper">
 
@@ -45,18 +80,9 @@ const Home = () => {
                       </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>Shuvo Ahmad</td>
-                          <td>shuvo-ahmad</td>
-                          <td>sa@gmail.com</td>
-                          <td>Admin</td>
-                          <td>Status</td>
-                          <td>
-                            <button className="btn btn-sm btn-primary mr-1">View</button>
-                            <button className="btn btn-sm btn-info">Edit</button>
-                            <button className="btn btn-sm btn-danger ml-1">Delete</button>
-                          </td>
-                        </tr>
+                        {error && errorMsg}
+                        {isLoading && LoadingMsg}
+                        {allUserData}
                       </tbody>
                     </table>
                   </div>

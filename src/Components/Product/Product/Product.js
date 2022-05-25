@@ -1,8 +1,39 @@
-import React from "react";
+import React, { useState , useEffect } from "react";
 import {Link} from "react-router-dom";
 import AddProduct from "./AddProduct";
+import AllProductSingleData from "./AllProductSingleData";
 
 const Product = () => {
+
+    const [productData , setProductData] = useState();
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const LoadingMsg = <p>Loading....</p>;
+    const errorMsg = <p>{error}</p>;
+
+    useEffect(()=>{
+        fetch('http://127.0.0.1:8000/api/admin/product').then((res)=>{
+            if (!res.ok){
+                throw Error("Fetching is not successful")
+            }else {
+                return res.json()
+            }
+        }).then((data)=>{
+            setProductData(data)
+            setIsLoading(false)
+            setError(null)
+        }).catch((error)=>{
+            setError(error.message)
+            setIsLoading(false)
+        })
+    },[]);
+
+    const  allProduct = productData && productData.map((data,idx)=>{
+        return[
+            <AllProductSingleData data={data} key={idx}/>
+        ]
+    });
+
     return(
         <div className="page-wrapper">
 
@@ -43,19 +74,16 @@ const Product = () => {
                                         <tr>
                                             <th>Product Name</th>
                                             <th>Slug</th>
+                                            <th>Stock</th>
                                             <th>Photo</th>
                                             <th>Status</th>
                                             <th>Action</th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>Samsung</td>
-                                            <td>samsung</td>
-                                            <td>photo</td>
-                                            <td>status</td>
-                                            <td><button className="btn btn-sm btn-danger">Delete</button></td>
-                                        </tr>
+                                        {error && errorMsg}
+                                        {isLoading && LoadingMsg}
+                                        {allProduct}
                                         </tbody>
                                     </table>
                                 </div>

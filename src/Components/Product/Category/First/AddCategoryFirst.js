@@ -2,12 +2,17 @@ import React ,{useState} from "react";
 import axios from "axios";
 const AddCategoryFirst = () => {
     const [name,setName] = useState('');
+    const [photo,setPhoto] = useState('');
     const [ErrorName,setErrorName] = useState('');
+    const [ErrorPhoto,setErrorPhoto] = useState('');
 
     const Validation = () => {
-        if (!name > 0) {
+        if (!name > 0 ) {
             setErrorName( "Name Field Are Required!");
-        }else {
+        }
+        /*else if (!photo > 0) {
+            setErrorPhoto( "Photo Field Are Required!");
+        }*/else {
             return true;
         }
     }
@@ -15,19 +20,29 @@ const AddCategoryFirst = () => {
     const handleInputChange = (e) =>{
         setName(e.target.value);
     }
+
+    const handlePhotoChange = (e) => {
+        setPhoto(e.target.files[0])
+        console.log(e.target.files[0])
+    }
+
     const onFirstCategorySubmit = (e) =>{
         e.preventDefault();
         if (Validation()){
             axios.post('http://127.0.0.1:8000/api/admin/category-first', {
                 name: name,
+                photo : photo,
             }).then(function (response) {
                 /*console.log(response);*/
 
             })
         }
         setName('');
+        //console.log(photo.name);
+
 
     }
+
     return(
         <div className="modal fade" id="addCategoryFirst">
             <div className="modal-dialog modal-dialog-centered" role="document">
@@ -54,8 +69,15 @@ const AddCategoryFirst = () => {
                             <strong>{ErrorName}</strong>
                             <div className="form-group">
                                 <label htmlFor="photo">Photo</label>
-                                <input type="file" className="form-control-file" id="photo"/>
+                                <input
+                                    name="photo[]"
+                                    onChange={handlePhotoChange}
+                                    type="file"
+                                    className="form-control-file"
+                                    id="photo"
+                                    />
                             </div>
+                            <strong>{ErrorPhoto}</strong>
                         </div>
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>

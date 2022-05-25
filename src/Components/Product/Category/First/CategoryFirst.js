@@ -25,12 +25,14 @@ const CategoryFirst = () => {
             setError(error.message)
             setIsLoading(false)
         })
-    },[]);
+    },[category]);
 
     const allCategoryFirst = category && category.map((data,id)=>{
-        return[
-            <SingleCategoryFirst data={data} key={id} />
-        ]
+
+            return[
+                <SingleCategoryFirst data={data} key={data.id} />
+            ]
+
     })
 
     return(

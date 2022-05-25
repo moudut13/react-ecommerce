@@ -58,14 +58,18 @@ const AddCategoryThird = () => {
     }
 
     const CategoryDataFirst = parentFirst && parentFirst.map((dataFirst, id)=>{
-        return[
-            <option key={id} value={dataFirst.name}>{dataFirst.name}</option>
-        ]
+        if (dataFirst.status == true){
+            return[
+                <option key={dataFirst.id} value={dataFirst.name}>{dataFirst.name}</option>
+            ]
+        }
     });
     const CategoryDataSecond = parentSecond && parentSecond.map((dataSecond,id)=>{
-        return[
-            <option key={id} value={dataSecond.name}>{dataSecond.name}</option>
-        ]
+        if (dataSecond.status == true){
+            return[
+                <option key={dataSecond.id} value={dataSecond.name}>{dataSecond.name}</option>
+            ]
+        }
     })
 
 

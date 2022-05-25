@@ -28,7 +28,9 @@ const CategorySecond = () => {
     },[]);
 
     const allCategorySecond = categorySecond && categorySecond.map((data,id)=>{
-        return <SingleCategorySecond data={data} key={id} />
+
+            return <SingleCategorySecond data={data} key={data.id} />
+
     });
 
     return(
